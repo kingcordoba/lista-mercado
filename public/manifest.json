@@ -1,0 +1,16 @@
+{
+  "name": "Mercados Cordoba",
+  "short_name": "Mercados",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#00e676",
+  "icons": [
+    {
+      "src": "/mercados-icono.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ]
+}
