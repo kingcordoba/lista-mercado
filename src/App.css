@@ -1,0 +1,202 @@
+/* --- Estilos Globales y Reinicio --- */
+:root {
+  font-family: 'Poppins', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color-scheme: dark light;
+  color: #d1d1d1;
+  background-color: #1a1a1a; /* Un negro menos agresivo */
+  
+  --color-accento: #4caf50; /* Verde principal para lo positivo */
+  --color-alerta: #e74c3c;  /* Rojo para borrar */
+  --sombra: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* --- Contenedor Principal --- */
+.contenedor-principal {
+  width: 100%;
+  max-width: 600px;
+  background: #252525;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+}
+
+/* --- Corrección del Título --- */
+h1 {
+  text-align: center;
+  color: white;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+/* --- Formulario de Entrada --- */
+.formulario {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr; /* 3 columnas */
+  grid-template-areas: "inputnombre inputcantidad inputubicacion" "btnbtn btnbtn btnbtn"; /* Ocupa filas para responsividad */
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+/* Responsividad para móviles */
+@media (max-width: 600px) {
+  .formulario {
+    grid-template-columns: 1fr;
+    grid-template-areas: "inputnombre" "inputcantidad" "inputubicacion" "btnbtn";
+  }
+}
+
+.formulario input,
+.formulario select {
+  grid-area: auto; /* Predeterminado */
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  background: #1e1e1e;
+  color: white;
+  font-size: 0.95rem;
+  transition: border-color 0.3s;
+}
+
+.formulario input:first-of-type { grid-area: inputnombre; }
+.formulario input:nth-of-type(2) { grid-area: inputcantidad; }
+.formulario select { grid-area: inputubicacion; }
+
+.formulario input:focus,
+.formulario select:focus {
+  outline: none;
+  border-color: var(--color-accento);
+}
+
+.formulario button[type="submit"] {
+  grid-area: btnbtn;
+  background-color: var(--color-accento);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.formulario button[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+
+.formulario button[type="submit"]:active {
+  transform: scale(0.98);
+}
+
+/* --- Lista de Productos --- */
+.lista-productos {
+  list-style-type: none;
+}
+
+.lista-productos li {
+  background: #1e1e1e;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+/* Estilo para las tarjetas de producto tachadas */
+.lista-productos li[style*="line-through"] {
+  background: #181818;
+}
+
+/* --- Corrección de la Info del Producto --- */
+.info-producto {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  text-align: left; /* Obliga al texto a ir a la izquierda */
+  align-items: flex-start; /* Evita que los elementos se centren por accidente */
+}
+
+.info-producto strong {
+  color: white;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.info-producto span {
+  color: #aaaaaa;
+  font-size: 0.9rem;
+}
+
+.info-producto small {
+  color: #90caf9; /* Azul claro para la ubicación */
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+/* --- Botones de Acción --- */
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.acciones button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: none;
+  font-weight: 600;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Botón 'Comprado' */
+.acciones button:first-child {
+  background-color: #2e3b2f;
+  color: #81c784;
+}
+
+.acciones button:first-child:hover {
+  background-color: var(--color-accento);
+  color: white;
+}
+
+/* Botón 'Deshacer' */
+.acciones button[style*="background-color"] {
+    background-color: #333333;
+    color: #aaaaaa;
+}
+
+/* Botón 'Borrar' */
+.acciones button:last-child {
+  background-color: #3a2220;
+  color: #ef9a9a;
+}
+
+.acciones button:last-child:hover {
+  background-color: var(--color-alerta);
+  color: white;
+}
+
+/* --- Icono del Título --- */
+.icono-titulo {
+  width: 45px;
+  height: auto;
+  filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.3)); /* Le da un toque de sombra */
+}

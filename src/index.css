@@ -1,0 +1,52 @@
+/* --- Formulario de Entrada (Corregido) --- */
+.formulario {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 columnas iguales */
+  gap: 12px;
+  margin-bottom: 2rem;
+  width: 100%; /* Obliga a no salirse del contenedor principal */
+}
+
+/* El input del nombre ocupará las dos columnas (toda la fila) */
+.formulario input:first-of-type { 
+  grid-column: 1 / -1; 
+}
+
+/* El botón ocupará las dos columnas (toda la fila) */
+.formulario button[type="submit"] {
+  grid-column: 1 / -1;
+  background-color: var(--color-accento);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.formulario input,
+.formulario select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #3a3a3a;
+  background: #1e1e1e;
+  color: white;
+  font-size: 0.95rem;
+  width: 100%; /* Asegura que no superen su espacio */
+  box-sizing: border-box; /* Cuenta el borde dentro del tamaño total */
+}
+
+.formulario input:focus,
+.formulario select:focus {
+  outline: none;
+  border-color: var(--color-accento);
+}
+
+.formulario button[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+
+.formulario button[type="submit"]:active {
+  transform: scale(0.98);
+}
