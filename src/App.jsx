@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
-import { supabase } from './supabase' // Importamos la conexión
+import { supabase } from './supabase'
 import './App.css'
-import iconoMercado from './assets/icono-mercado.png' // <-- Aquí importamos la imagen directamente
+import iconoMercado from './assets/icono-mercado.png'
 
 function App() {
   const [productos, setProductos] = useState([]);
   const [nombre, setNombre] = useState('');
   const [cantidad, setCantidad] = useState('');
   const [ubicacion, setUbicacion] = useState('Supermercado');
+  const [precio, setPrecio] = useState('');
 
-  // 1. Cargar los productos desde la nube al abrir la app
   useEffect(() => {
     cargarProductos();
   }, []);
@@ -18,13 +18,15 @@ function App() {
     const { data, error } = await supabase
       .from('productos')
       .select('*')
-      .order('id', { ascending: true }); // Ordena por orden de creación
+      .order('id', { ascending: true });
     
     if (error) console.error("Error cargando productos:", error);
     else setProductos(data);
   };
 
-  // 2. Guardar un producto nuevo en la nube
+  // Cálculo del total (aquí está la magia)
+  const total = productos.reduce((acc, prod) => acc + (parseFloat(prod.precio) || 0), 0);
+
   const agregarProducto = async (e) => {
     e.preventDefault();
     if (!nombre.trim()) return;
@@ -33,76 +35,52 @@ function App() {
       nombre,
       cantidad,
       ubicacion,
+      precio: precio ? parseFloat(precio) : null,
       tachado: false
     };
 
     const { data, error } = await supabase
       .from('productos')
       .insert([nuevoProducto])
-      .select(); // .select() hace que Supabase nos devuelva el producto ya con su ID final
+      .select();
 
     if (error) {
-      alert("Hubo un error con Supabase: " + error.message);
-      console.error("Detalle del error:", error);
+      alert("Error al guardar: " + error.message);
     } else if (data) {
       setProductos([...productos, data[0]]);
       setNombre('');
       setCantidad('');
+      setPrecio('');
     }
   };
 
-  // 3. Tachar o destachar en la nube
   const alternarTachado = async (id, estadoActual) => {
-    // Truco visual: Actualizamos la pantalla de inmediato para que se sienta rápido
     setProductos(productos.map(prod => 
       prod.id === id ? { ...prod, tachado: !estadoActual } : prod
     ));
 
-    // Luego le avisamos a la base de datos
     const { error } = await supabase
       .from('productos')
       .update({ tachado: !estadoActual })
       .eq('id', id);
-
-    if (error) console.error("Error actualizando producto:", error);
   };
 
-  // 4. Eliminar en la nube
   const eliminarProducto = async (id) => {
-    // Truco visual: Lo borramos de la pantalla de inmediato
     setProductos(productos.filter(prod => prod.id !== id));
-
-    // Luego lo borramos de la base de datos
-    const { error } = await supabase
-      .from('productos')
-      .delete()
-      .eq('id', id);
-      
-    if (error) console.error("Error eliminando producto:", error);
+    await supabase.from('productos').delete().eq('id', id);
   };
 
   return (
     <div className="contenedor-principal">
       <h1>
-        {/* Usamos la variable iconoMercado en lugar del texto entre comillas */}
         <img src={iconoMercado} alt="Icono" className="icono-titulo" /> 
         Mercados Cordoba
       </h1>
 
       <form onSubmit={agregarProducto} className="formulario">
-        <input 
-          type="text" 
-          placeholder="¿Qué vas a comprar?" 
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          required 
-        />
-        <input 
-          type="text" 
-          placeholder="Cantidad (ej. 2 libras)" 
-          value={cantidad}
-          onChange={(e) => setCantidad(e.target.value)}
-        />
+        <input type="text" placeholder="¿Qué vas a comprar?" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+        <input type="text" placeholder="Cantidad (ej. 2 libras)" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
+        <input type="number" placeholder="Precio ($)" value={precio} onChange={(e) => setPrecio(e.target.value)} />
         <select value={ubicacion} onChange={(e) => setUbicacion(e.target.value)}>
           <option value="Supermercado">Supermercado</option>
           <option value="Plaza">Plaza</option>
@@ -121,10 +99,10 @@ function App() {
             <div className="info-producto">
               <strong>{producto.nombre}</strong> 
               <span> ({producto.cantidad}) </span>
+              {producto.precio && <strong>| ${producto.precio}</strong>}
               <small>📍 {producto.ubicacion}</small>
             </div>
             <div className="acciones">
-              {/* Le pasamos el ID y el estado actual (tachado o no) */}
               <button onClick={() => alternarTachado(producto.id, producto.tachado)}>
                 {producto.tachado ? 'Deshacer' : 'Comprado'}
               </button>
@@ -133,6 +111,11 @@ function App() {
           </li>
         ))}
       </ul>
+
+      {/* Visualización del Total */}
+      <div className="total-lista">
+        <h3>Total Estimado: ${total.toLocaleString()}</h3>
+      </div>
     </div>
   )
 }
